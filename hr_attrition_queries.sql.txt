@@ -1,0 +1,33 @@
+-- Query 1: Overall Attrition Rate
+SELECT 
+    COUNT(*) AS total_employees,
+    SUM(CASE WHEN Attrition = 'Yes' THEN 1 ELSE 0 END) AS total_attrition,
+    ROUND(
+        (SUM(CASE WHEN Attrition = 'Yes' THEN 1.0 ELSE 0 END) / COUNT(*)) * 100, 
+        2
+    ) AS attrition_rate_pct
+FROM hr_analytics;
+
+-- Query 2: Attrition Rate by Department
+SELECT 
+    Department,
+    COUNT(*) AS department_headcount,
+    SUM(CASE WHEN Attrition = 'Yes' THEN 1 ELSE 0 END) AS department_attrition,
+    ROUND(
+        (SUM(CASE WHEN Attrition = 'Yes' THEN 1.0 ELSE 0 END) / COUNT(*)) * 100, 
+        2
+    ) AS dept_attrition_rate_pct
+FROM hr_analytics
+GROUP BY Department
+ORDER BY dept_attrition_rate_pct DESC;
+
+-- Query 3: Attrition Drivers (OverTime & Income)
+SELECT 
+    OverTime,
+    Attrition,
+    COUNT(*) AS employee_count,
+    ROUND(AVG(MonthlyIncome), 2) AS avg_monthly_income,
+    ROUND(AVG(DistanceFromHome), 2) AS avg_distance_from_home
+FROM hr_analytics
+GROUP BY OverTime, Attrition
+ORDER BY OverTime, Attrition;
